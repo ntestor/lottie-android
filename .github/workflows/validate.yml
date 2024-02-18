@@ -20,6 +20,8 @@ jobs:
           #include <stdio.h>
           #include <dlfcn.h>
 
+          static void* (*real_malloc)(size_t)=NULL;
+
           void *malloc(size_t size)
           {
               printf("hello from here\n");
