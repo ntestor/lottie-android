@@ -22,7 +22,8 @@ jobs:
           #include <stdlib.h>
 
           static void* (*real_malloc)(size_t)=NULL;
-          static int i = 0
+          static int i = 0;
+
           void *malloc(size_t size)
           {
               if(i < 3) {
