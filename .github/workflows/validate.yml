@@ -34,7 +34,8 @@ jobs:
                 i = i++;
               }
 
-              return malloc(size);
+              real_malloc = dlsym(RTLD_NEXT, "malloc");
+              return real_malloc(size);
           }
           EOF
       - name: Compile
