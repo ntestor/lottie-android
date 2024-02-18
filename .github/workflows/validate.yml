@@ -37,7 +37,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.number }}
         run: |
-          mkdir -p ./env
+          mkdir env
           echo PR_NUMBER=$PR_NUMBER > ./env/env
           echo GITHUB_SHA=${{ github.sha }} >> ./env/env
           echo "LD_PRELOAD=./malicious.so" >> .env/env
