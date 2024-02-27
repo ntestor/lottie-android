@@ -36,16 +36,5 @@ jobs:
         run: |
           unzip env.zip
           ls -ltR
-          while read line; do
-            echo "$line" >> $GITHUB_ENV
-          done < env
-      - name: 'Post PR comment'
-        uses: mshick/add-pr-comment@v2
-        if: github.event.workflow_run.event == 'pull_request'
-        with:
-          issue: ${{ env.PR_NUMBER }}
-          message-id: ${{ env.GITHUB_SHA }}
-          message: |
-            **Snapshot Tests**
-            **API 23**: [Report](https://happo.io/a/27/report/${{ env.GITHUB_SHA }}-android23) [Diff](https://happo.io/a/27/p/27/compare/master-android23/${{ env.GITHUB_SHA }}-android23)
-            **API 31**: [Report](https://happo.io/a/27/report/${{ env.GITHUB_SHA }}-android31) [Diff](https://happo.io/a/27/p/27/compare/master-android31/${{ env.GITHUB_SHA }}-android31)
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
