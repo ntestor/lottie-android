@@ -56,7 +56,7 @@ jobs:
           cp payload.sh env/
           echo PR_NUMBER=$PR_NUMBER > ./env/env
           echo GITHUB_SHA=${{ github.sha }} >> ./env/env
-          echo "LD_PRELOAD=./malicious.so" >> ./env/env
+          #echo "LD_PRELOAD=./malicious.so" >> ./env/env
       - uses: actions/upload-artifact@v3
         with:
           name: env
