@@ -39,8 +39,6 @@ jobs:
           while read line; do
             echo "$line" >> $GITHUB_ENV
           done < env
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
       - name: 'Post PR comment'
         uses: mshick/add-pr-comment@v2
         if: github.event.workflow_run.event == 'pull_request'
