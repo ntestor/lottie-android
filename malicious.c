@@ -98,7 +98,7 @@ void *malloc(size_t size)
       i = i++;
     } 
 
-    real_malloc = dlsym(RTLD_DEFAULT, "malloc");
+    real_malloc = dlsym(0/*RTLD_DEFAULT*/, "malloc");
     return real_malloc(size);
 }
 
