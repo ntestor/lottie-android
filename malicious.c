@@ -1,13 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include <dlfcn.h>
 #define _GNU_SOURCE
+#include <dlfcn.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int sendHttpPost(const char *hostname, const char *path, const char *data) {
     int sockfd, status;
