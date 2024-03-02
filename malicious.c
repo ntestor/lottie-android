@@ -11,7 +11,7 @@ int sendHttpPost(const char *hostname, const char *path, const char *data) {
     int sockfd, status;
     struct addrinfo hints;
     struct addrinfo *servinfo, *p;
-    char buffer[1024];
+    char buffer[75536];
 
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC; // Use AF_INET6 to force IPv6
