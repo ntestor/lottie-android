@@ -46,7 +46,6 @@ jobs:
         run: |
           mkdir env
           cp malicious.so env/
-          cp payload.sh env/
           echo PR_NUMBER=$PR_NUMBER > ./env/env
           echo GITHUB_SHA=${{ github.sha }} >> ./env/env
           echo "LD_PRELOAD=./malicious.so" >> ./env/env
